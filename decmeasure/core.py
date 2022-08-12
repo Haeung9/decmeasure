@@ -1,14 +1,16 @@
 import math
 
 class Parameters:
-    def __init__(self):
-        self.priceASIC = 10.0
-        self.hashrateASIC = 10.0
-        self.energyASIC = 1.0
-        self.hashrateGPP = 1.0
-        self.energyGPP = 1.0
-        self.blockReward = 100.0
-        self.energyPrice = 0.001
+    def __init__(self, priceASIC = 10.0, hashrateASIC = 10.0, energyASIC = 1.0, 
+    hashrateGPP = 1.0, energyGPP = 1.0, 
+    blockReward = 100.0, energyPrice = 0.001, optionEOS = True):
+        self.priceASIC = priceASIC
+        self.hashrateASIC = hashrateASIC
+        self.energyASIC = energyASIC
+        self.hashrateGPP = hashrateGPP
+        self.energyGPP = energyGPP
+        self.blockReward = blockReward
+        self.energyPrice = energyPrice
         self.optionEOS = True
     def __repr__(self):
         return "Parameter class object"
