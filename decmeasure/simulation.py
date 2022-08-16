@@ -13,54 +13,60 @@ def main():
     parametersB = core.Parameters(priceASIC= 20.0)
     parametersC = core.Parameters(priceASIC= 50.0)
     parametersD = core.Parameters(priceASIC= 100.0)
+    parameters = [parametersA, parametersB, parametersC, parametersD]
     numberOfUsers = 1000
     initialBudgetMean = 500.0
     maximumUpdateDuration = 100
     maximumBlockCounter = 1000
     datadirpath = os.path.join(os.getcwd(), "data")
-    fileParameters = open(os.path.join(datadirpath, "parameterA.txt"), mode="w")
-    stdout = sys.stdout
-    sys.stdout = fileParameters
-    parametersA.print()
-    fileParameters.close()
-    sys.stdout = stdout
+    try:
+        if not os.path.exists(datadirpath):
+            os.makedirs(datadirpath)
+    except OSError:
+        print("Error: Failed to create the directory.")
 
-    # Generate UsersA for parametersA
-    UserA = lib.generateMultipleUsers(parametersA, numberOfUsers, initialBudgetMean, maximumUpdateDuration)
-    # Single simulation for parametersA
-    [userSnapshot, DRHistory, PIHistory, CVHistory, winnerIndexHistory] = singleSimulation(parametersA,UserA,maximumBlockCounter)
-    # Write the result in the file
-    DRstr = list(map(str, DRHistory))
-    PIstr = list(map(str, PIHistory))
-    CVstr = list(map(str, CVHistory))
-    fileResults = open(os.path.join(datadirpath, "resultA.txt"), mode="w")
-    fileResults.write("DRHistory \n")
-    fileResults.writelines("\t".join(DRstr))
-    fileResults.write("\nPIHistory \n")
-    fileResults.writelines("\t".join(PIstr))
-    fileResults.write("\nCVHistory \n")
-    fileResults.writelines("\t".join(CVstr))
-    fileResults.write("\n")
-    fileResults.close()
+    for cnt_sim in range(len(parameters)):
+        fileNameSeparator = str(cnt_sim)
+        parameterFileName = "parameter"+ fileNameSeparator + ".txt"
+        fileParameters = open(os.path.join(datadirpath, parameterFileName), mode="w")
+        stdout = sys.stdout
+        sys.stdout = fileParameters
+        parameters[cnt_sim].print()
+        fileParameters.close()
+        sys.stdout = stdout
 
-    fileSnapshots = open(os.path.join(datadirpath, "snapshotA.txt"), mode="w")
-    stdout = sys.stdout
-    sys.stdout = fileSnapshots
-    for i in range(len(userSnapshot)):
-        fileSnapshots.write("Snapshot ")
-        fileSnapshots.write(str(i))
-        fileSnapshots.write(":\n")
-        for j in range(numberOfUsers):
-            userSnapshot[i][j].print()
-    sys.stdout = stdout
-    fileSnapshots.close()
+        # Generate Users for parameters
+        UserA = lib.generateMultipleUsers(parameters[cnt_sim], numberOfUsers, initialBudgetMean, maximumUpdateDuration)
+        # Single simulation for parameters
+        [userSnapshot, DRHistory, PIHistory, CVHistory, winnerIndexHistory] = singleSimulation(parameters[cnt_sim],UserA,maximumBlockCounter)
+        # Write the result in the file
+        DRstr = list(map(str, DRHistory))
+        PIstr = list(map(str, PIHistory))
+        CVstr = list(map(str, CVHistory))
 
-    # Generate UsersB for parametersB
-    pass
-    # Single simulation for parametersB
-    pass
-    # Append the result in the file
-    pass
+        resultFileName = "result" + fileNameSeparator + ".txt"
+        fileResults = open(os.path.join(datadirpath, resultFileName), mode="w")
+        fileResults.write("DRHistory \n")
+        fileResults.writelines("\t".join(DRstr))
+        fileResults.write("\nPIHistory \n")
+        fileResults.writelines("\t".join(PIstr))
+        fileResults.write("\nCVHistory \n")
+        fileResults.writelines("\t".join(CVstr))
+        fileResults.write("\n")
+        fileResults.close()
+
+        snapshotFileName = "snapshot" + fileNameSeparator + ".txt"
+        fileSnapshots = open(os.path.join(datadirpath, snapshotFileName), mode="w")
+        stdout = sys.stdout
+        sys.stdout = fileSnapshots
+        for i in range(len(userSnapshot)):
+            fileSnapshots.write("Snapshot ")
+            fileSnapshots.write(str(i))
+            fileSnapshots.write(":\n")
+            for j in range(numberOfUsers):
+                userSnapshot[i][j].print()
+        sys.stdout = stdout
+        fileSnapshots.close()
 
 
 def singleSimulation(parameters = core.Parameters(), Users = lib.generateMultipleUsers(core.Parameters(), 1000), maximumBlockCounter = 1000):
