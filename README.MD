@@ -3,13 +3,13 @@
 `pip install -r requirements.txt`
 
 ## Running
-1. Windows:
+1. Windows:  
 `py main.py`
 
-2. Linux:
+2. Linux:  
 ``
 
 ## Test
-1. Windows
+1. Windows:  
 `py setup.py test`
 
