@@ -11,7 +11,7 @@ class Parameters:
         self.energyGPP = energyGPP
         self.blockReward = blockReward
         self.energyPrice = energyPrice
-        self.optionEOS = True
+        self.optionEOS = optionEOS
     def __repr__(self):
         return "Parameter class object"
     def print(self):

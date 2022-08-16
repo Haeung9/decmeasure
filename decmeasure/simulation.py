@@ -9,15 +9,15 @@ from . import core
 from . import lib
 
 def main():
-    parametersA = core.Parameters(priceASIC= 10.0)
-    parametersB = core.Parameters(priceASIC= 20.0)
-    parametersC = core.Parameters(priceASIC= 50.0)
-    parametersD = core.Parameters(priceASIC= 100.0)
+    parametersA = core.Parameters(priceASIC= 10.0, hashrateASIC= 100.0, energyASIC= 10.0, optionEOS= False)
+    parametersB = core.Parameters(priceASIC= 10.0, hashrateASIC= 100.0, energyASIC= 20.0, optionEOS= False)
+    parametersC = core.Parameters(priceASIC= 10.0, hashrateASIC= 100.0, energyASIC= 30.0, optionEOS= False)
+    parametersD = core.Parameters(priceASIC= 10.0, hashrateASIC= 100.0, energyASIC= 50.0, optionEOS= False)
     parameters = [parametersA, parametersB, parametersC, parametersD]
     numberOfUsers = 1000
     initialBudgetMean = 500.0
     maximumUpdateDuration = 100
-    maximumBlockCounter = 1000
+    maximumBlockCounter = 4000
     datadirpath = os.path.join(os.getcwd(), "data")
     try:
         if not os.path.exists(datadirpath):

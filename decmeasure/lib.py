@@ -13,6 +13,9 @@ def generateMultipleUsers(parameters, numberOfUsers, initialBudgetMean = 500.0, 
 
 def randomMining(Users, rng = numpy.random.default_rng(round(time.time()))):
     networkHashrate = computeNetworkHashrate(Users)
+    if networkHashrate == 0.0:
+        print("Warning: lib.randomMining: hashrate is zero. The winner is selected uniform randomly.")
+        return rng.integers(0,len(Users))
     miningCMF = [Users[0].hashrate/networkHashrate] * len(Users)
     for i in range(len(Users)-1):
         miningPMF = Users[i+1].hashrate / networkHashrate
@@ -35,6 +38,9 @@ def computePolarizationIndex(Users):
     hashrate = sortedHashrate(Users, True)
     upperClassHashrate = 0
     networkHashrate = computeNetworkHashrate(Users)
+    if networkHashrate == 0.0:
+        print("Warning: lib.computePolarizationIndex: hashrate is zero.")
+        return 0.0
     for i in range(numberOfUpperClass):
         upperClassHashrate += hashrate[i]
     return upperClassHashrate / networkHashrate
@@ -44,6 +50,9 @@ def computeCollusionVulnerability(Users):
     numberOfUpperClass = 0
     upperClassHashrate = 0
     networkHashrate = computeNetworkHashrate(Users)
+    if networkHashrate == 0.0:
+        print("Warning: lib.computeCollusionVulnerability: hashrate is zero.")
+        return 0.0
     while (upperClassHashrate/networkHashrate) <= 0.5:
         upperClassHashrate += hashrate[numberOfUpperClass]
         numberOfUpperClass += 1
