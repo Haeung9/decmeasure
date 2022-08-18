@@ -3,7 +3,7 @@ import math
 class Parameters:
     def __init__(self, priceASIC = 10.0, hashrateASIC = 10.0, energyASIC = 1.0, 
     hashrateGPP = 1.0, energyGPP = 1.0, 
-    blockReward = 100.0, energyPrice = 0.001, optionEOS = True):
+    blockReward = 100.0, energyPrice = 0.0002, optionEOS = True):
         self.priceASIC = priceASIC
         self.hashrateASIC = hashrateASIC
         self.energyASIC = energyASIC
@@ -20,11 +20,11 @@ class Parameters:
         print("Environment parameters: ", "\n\t", "Block rewards: ", self.blockReward, ", Energy Price: ", self.energyPrice, ", EOS option:", self.optionEOS)
 
 class User:
-    def __init__(self, parameters, rng, initialBudgetMean = 500.0, maximumUpdateDuration = 100):
+    def __init__(self, parameters, rng, initialBudgetMean = 500.0, maximumUpdateDuration = 10):
         self.budget = rng.exponential(initialBudgetMean) # exponential random
         self.updateDuration = rng.integers(low = 1, high = maximumUpdateDuration, endpoint = True) # random
         self.updateCounter = rng.integers(low = 0, high = self.updateDuration - 1, endpoint = True)
-        self.profitRatioThreshold = rng.random() /10
+        self.profitRatioThreshold = rng.random() /2.5 + 0.1 # 0.1 ~ 0.5
         self.rationality = rng.random() / 10
         self.numberASIC = math.ceil(self.budget / parameters.priceASIC)
         self.profit = 0.0
@@ -33,6 +33,9 @@ class User:
         self.role = "um"
         self.device = "ASIC+GPP"
         self.updateHashrate(parameters)
+
+    def computeEnergyPriceEffective(self, parameters, energyConsumption):
+        return parameters.energyPrice / (1 + math.log10(energyConsumption)/10.0)
 
     def updateHashrate(self, parameters):
         if self.role == "um":
@@ -58,9 +61,8 @@ class User:
     def computeEnergyCost(self, parameters, includeGPP):
         energyConsume = parameters.energyASIC * self.numberASIC
         energyConsume = energyConsume + 1.0 if includeGPP else energyConsume
-        energyPrice = parameters.energyPrice
-        energyPrice = energyPrice/(1.0 + math.log10(energyConsume)) if parameters.optionEOS else energyPrice
-        energyCost = energyPrice * energyConsume
+        self.energyPriceEffective = self.computeEnergyPriceEffective(parameters, energyConsume) if parameters.optionEOS else parameters.energyPrice
+        energyCost = self.energyPriceEffective * energyConsume
         return energyCost
 
     def positionUpdate(self, networkHashrate, parameters):
