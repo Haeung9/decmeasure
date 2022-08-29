@@ -20,6 +20,8 @@ class Parameters:
         print("Environment parameters: ", "\n\t", "Block rewards: ", self.blockReward, ", Energy Price: ", self.energyPrice, ", EOS option:", self.optionEOS)
 
 class User:
+    """ State of a user
+    """
     def __init__(self, parameters, rng, initialBudgetMean = 500.0, maximumUpdateDuration = 10):
         self.budget = rng.exponential(initialBudgetMean) # exponential random
         self.updateDuration = rng.integers(low = 1, high = maximumUpdateDuration, endpoint = True) # random
@@ -30,7 +32,7 @@ class User:
         self.profit = 0.0
         self.profitRatio = 0.0
         self.energyPriceEffective = parameters.energyPrice
-        self.role = "um"
+        self.role = "um" # um for miner, u0 for non-miner
         self.device = "ASIC+GPP"
         self.updateHashrate(parameters)
 

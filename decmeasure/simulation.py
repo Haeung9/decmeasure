@@ -8,16 +8,17 @@ from . import core
 from . import lib
 
 def main():
-    parametersA = core.Parameters(priceASIC= 10.0, hashrateASIC= 50.0, energyASIC= 10.0, optionEOS= False, blockReward= 20.0)
-    parametersB = core.Parameters(priceASIC= 10.0, hashrateASIC= 50.0, energyASIC= 20.0, optionEOS= False, blockReward= 20.0)
-    parametersC = core.Parameters(priceASIC= 10.0, hashrateASIC= 50.0, energyASIC= 30.0, optionEOS= False, blockReward= 20.0)
-    parametersD = core.Parameters(priceASIC= 10.0, hashrateASIC= 50.0, energyASIC= 40.0, optionEOS= False, blockReward= 20.0)
+    parametersA = core.Parameters(priceASIC= 10.0, hashrateASIC= 100.0, energyASIC= 10.0)
+    parametersB = core.Parameters(priceASIC= 10.0, hashrateASIC= 80.0, energyASIC= 8.0)
+    parametersC = core.Parameters(priceASIC= 10.0, hashrateASIC= 60.0, energyASIC= 6.0)
+    parametersD = core.Parameters(priceASIC= 10.0, hashrateASIC= 40.0, energyASIC= 4.0)
     parameters = [parametersA, parametersB, parametersC, parametersD]
     numberOfUsers = 1000
     initialBudgetMean = 100.0
     maximumUpdateDuration = 10
     maximumBlockCounter = 4000
     seed = round(time.time())
+    # save the random number generator seed for reproducibility
     datadirpath = os.path.join(os.getcwd(), "data")
     try:
         if not os.path.exists(datadirpath):
@@ -26,6 +27,7 @@ def main():
         print("Error: Failed to create the directory.")
     fileSeed = open(os.path.join(datadirpath, "randomSeed.txt"), mode="w")
     fileSeed.write(str(seed))
+    fileSeed.close()
 
     for cnt_sim in range(len(parameters)):
         fileNameSeparator = str(cnt_sim)
@@ -84,7 +86,7 @@ def singleSimulation(parameters = core.Parameters(), Users = lib.generateMultipl
     userSnapshot = []
     
     for blockCounter in range(maximumBlockCounter):
-        # After a block
+        # update users' states after mine a block
         [Users, DR, PI, CV, winnerIndex, networkHashrate] = progressOneBlock(parameters, Users)
         
         # Archive history
@@ -93,7 +95,6 @@ def singleSimulation(parameters = core.Parameters(), Users = lib.generateMultipl
         CVHistory.append(copy.deepcopy(CV))
         networkHashrateHistory.append(copy.deepcopy(networkHashrate))
         winnerIndexHistory.append(winnerIndex)
-
 
         # Take a snapshot
         if blockCounter % round(maximumBlockCounter/10) == 0:

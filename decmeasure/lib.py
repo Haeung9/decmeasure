@@ -12,6 +12,8 @@ def generateMultipleUsers(parameters, numberOfUsers, initialBudgetMean = 500.0, 
     return Users
 
 def randomMining(Users, rng = numpy.random.default_rng(round(time.time()))):
+    """ randomly select a winner according to users' mining probability
+    """
     networkHashrate = computeNetworkHashrate(Users)
     if networkHashrate == 0.0:
         print("Warning: lib.randomMining: hashrate is zero. The winner is selected uniform randomly.")
