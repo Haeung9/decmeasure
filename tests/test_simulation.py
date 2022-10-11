@@ -20,7 +20,7 @@ class SimulationTest(unittest.TestCase):
         previousUsers = copy.deepcopy(Users)
 
         # progress a block
-        [Users, DR, PI, CV, winnerIndex] = simulation.progressOneBlock(SettingA, Users)
+        [Users, DR, PI, CV, winnerIndex, networkHashrate] = simulation.progressOneBlock(SettingA, Users)
 
         # winner's budget changes
         previous = previousUsers[winnerIndex].budget
@@ -35,14 +35,16 @@ class SimulationTest(unittest.TestCase):
         SettingA = core.Parameters()
         numberOfUsers = 10
         Users = lib.generateMultipleUsers(SettingA, numberOfUsers, maximumUpdateDuration = 2 ,rng=rng)
-        [userSnapshot, DRHistory, PIHistory, CVHistory, winnerIndexHistory] = simulation.singleSimulation(SettingA, Users, maximumBlockCounter = 20)
+        [userSnapshot, DRHistory, PIHistory, CVHistory, winnerIndexHistory, networkHashrateHistory] = simulation.singleSimulation(SettingA, Users, maximumBlockCounter = 20)
         print(PIHistory)
         print(winnerIndexHistory)
         print("blockReward: ", SettingA.blockReward, ", priceASIC: ", SettingA.priceASIC)
+        initial = userSnapshot[0][0].getData()
+        last = userSnapshot[-1][0].getData()
         print("*user[0] initial: ")
-        userSnapshot[0][0].print()
+        print(", ".join(initial))
         print("*user[0] final: ")
-        userSnapshot[-1][0].print()
+        print(", ".join(last))
         pass
 
 if __name__ == "__main__":

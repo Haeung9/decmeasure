@@ -11,5 +11,5 @@
 
 ## Test
 1. Windows:  
-`py setup.py test`
+`py -m unittest test`
 

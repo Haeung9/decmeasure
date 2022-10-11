@@ -1,4 +1,5 @@
 import math
+import pandas as pd
 
 class Parameters:
     def __init__(self, priceASIC = 10.0, hashrateASIC = 10.0, energyASIC = 1.0, 
@@ -93,21 +94,41 @@ class User:
 
     def __repr__(self):
         return "User class object"
+    def getColumns(self):
+        return ["budget", 
+        "role", 
+        "device",
+        "hashrate",
+        "profit",
+        "profitRatio",
+        "energyPriceEffective",
+        "numberASIC",
+        "updateDuration",
+        "updateCounter",
+        "profitRatioThreshold",
+        "rationality"]
+    def getData(self):
+        return [str(self.budget), 
+        str(self.role), 
+        str(self.device), 
+        str(self.hashrate), 
+        str(self.profit), 
+        str(self.profitRatio),
+        str(self.energyPriceEffective),
+        str(self.numberASIC),
+        str(self.updateDuration),
+        str(self.updateCounter),
+        str(self.profitRatioThreshold),
+        str(self.rationality)]
+
+    def toDataFrame(self):
+        dataFrameColumns = self.getColumns()
+        dataFrameData = self.getData()
+        dataFrame = pd.DataFrame(data=dataFrameData, columns=dataFrameColumns)
+        return dataFrame
+
     def print(self):
-        temp = []
-        temp.append("budget: " + str(self.budget))
-        temp.append("role: " + str(self.role))
-        temp.append("device: " + str(self.device))
-        temp.append("hashrate: " + str(self.hashrate))
-        temp.append("profit: " + str(self.profit))
-        temp.append("profitRatio: " + str(self.profitRatio))
-        temp.append("energyPriceEffective: " + str(self.energyPriceEffective))
-        temp.append("numberASIC: " + str(self.numberASIC))
-        temp.append("updateDuration: " + str(self.updateDuration))
-        temp.append("updateCounter: " + str(self.updateCounter))
-        temp.append("profitRatioThreshold: " + str(self.profitRatioThreshold))
-        temp.append("rationality: " + str(self.rationality))
-        printString = ", ".join(temp)
-        print(printString)
+        dataFrame = self.toDataFrame()
+        print(dataFrame)
 
     

@@ -50,31 +50,34 @@ def main():
         CVstr = list(map(str, CVHistory))
         HRstr = list(map(str,networkHashrateHistory))
 
-        resultFileName = "result" + fileNameSeparator + ".txt"
+        resultFileName = "result" + fileNameSeparator + ".csv"
         fileResults = open(os.path.join(datadirpath, resultFileName), mode="w")
-        fileResults.write("DRHistory \n")
-        fileResults.writelines("\t".join(DRstr))
-        fileResults.write("\nPIHistory \n")
-        fileResults.writelines("\t".join(PIstr))
-        fileResults.write("\nCVHistory \n")
-        fileResults.writelines("\t".join(CVstr))
-        fileResults.write("\nHashrateHistory \n")
-        fileResults.writelines("\t".join(HRstr))
+        resultColumns = ["DRHistory", "PIHistory", "CVHistory", "HashrateHistory"]
+        fileResults.write("\t".join(resultColumns))
         fileResults.write("\n")
+        for i in range(len(DRstr)):
+            fileResults.write(DRstr[i])
+            fileResults.write("\t")
+            fileResults.write(PIstr[i])
+            fileResults.write("\t")
+            fileResults.write(CVstr[i])
+            fileResults.write("\t")
+            fileResults.write(HRstr[i])
+            fileResults.write("\n")
         fileResults.close()
 
-        snapshotFileName = "snapshot" + fileNameSeparator + ".txt"
-        fileSnapshots = open(os.path.join(datadirpath, snapshotFileName), mode="w")
-        stdout = sys.stdout
-        sys.stdout = fileSnapshots
+        snapshotFileNamePrefix = "snapshot_forParameter" + fileNameSeparator
         for i in range(len(userSnapshot)):
-            fileSnapshots.write("Snapshot ")
-            fileSnapshots.write(str(i))
-            fileSnapshots.write(":\n")
-            for j in range(numberOfUsers):
-                userSnapshot[i][j].print()
-        sys.stdout = stdout
-        fileSnapshots.close()
+            snapshotFileName = snapshotFileNamePrefix + "_No" + str(i) + ".csv"
+            fileSnapshots = open(os.path.join(datadirpath, snapshotFileName), mode="w")
+            columnString = userSnapshot[0][0].getColumns()
+            fileSnapshots.write("\t".join(columnString))
+            fileSnapshots.write("\n")
+            for j in range(len(userSnapshot[i])):
+                data = userSnapshot[i][j].getData()
+                fileSnapshots.write("\t".join(data))
+                fileSnapshots.write(":\n")
+            fileSnapshots.close()
 
 
 def singleSimulation(parameters = core.Parameters(), Users = lib.generateMultipleUsers(core.Parameters(), 1000), maximumBlockCounter = 1000):
